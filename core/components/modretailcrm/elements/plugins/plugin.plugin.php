@@ -41,12 +41,35 @@ switch ($modx->event->name) {
         $order['products'] = $pdo->getCollection('msOrderProduct', array('order_id' => $order['id']), array('sortby' => 'id'));        
         
         $orderData = array();
+        //Проверяю наличие пользователя в базе CRM
+        $user_response = $modRetailCrm->request->customersGet($order['user_id'], 'externalId', $site);
+        if($user_response->getStatusCode() == 404){
+            $customer_profile = $pdo->getArray('modUserProfile', array('internalKey' => $order['user_id']));
+            $customer = array();
+            $customer['externalId'] =  $order['user_id'];
+            $customer['firstName'] = $customer_profile['fullname'];
+            $customer['email'] = $customer_profile['email'];
+            if(!empty($customer_profile['phone'])){
+                $customer['phones'][]['number'] = $customer_profile['phone'];
+            }
+            $response = $modRetailCrm->request->customersCreate($customer, $site);
+        }
+
         $orderData['customer']['externalId'] = $order['user_id'];
-        $orderData['externalId'] = $order['id'];
+        $orderData['externalId'] = $order['num'];
+        //$orderData['externalId'] = $order['id']; Желающим идентифицировать заказ по id
         $orderData['firstName'] = !empty($order['address']['receiver']) ? $order['address']['receiver'] : $order['profile']['fullname'];
         $orderData['phone'] = !empty($order['address']['phone']) ? $order['address']['phone'] : $order['profile']['phone'];
         $orderData['email'] = $order['profile']['email'];
-     
+
+        $tmpName = explode(' ', $orderData['firstName']);
+        if(count($tmpName == 3)){
+            $orderData['lastName'] = $tmpName[0];
+            $orderData['firstName'] = $tmpName[1];
+            $orderData['patronymic'] = $tmpName[2];
+        }
+
+
         foreach ($order['products'] as $key=>$product) {
             $orderData['items'][$key]['initialPrice'] = $product['price'];
             $orderData['items'][$key]['purchasePrice'] = $product['price'];
@@ -56,7 +79,11 @@ switch ($modx->event->name) {
             foreach($product['options'] as $k=>$v){
                 $orderData['items'][$key]['properties'][] = array('name' => $k, 'value' => $v); 
             }
-		}
+
+            if($order['weight']> 0){
+                $orderData['weight'] = $order['weight'];
+            }
+        }
 		
 		$fields = array(
             'index' => 'Индекс', 
@@ -84,10 +111,10 @@ switch ($modx->event->name) {
         
         $orderData['delivery']['address']['text'] = $address;
         $orderData['customerComment'] = $order['address']['comment'];
-        $orderData['delivery']['code'] = $order['delivery']['description'];
-        $orderData['delivery']['cost'] = $order['delivery']['price'];
+        //$orderData['delivery']['code'] = $order['delivery']['description'];
+        //$orderData['delivery']['cost'] = $order['delivery']['price'];
         
-        $orderData['payments'][0]['type'] = $order['payment']['description'];
+        //$orderData['payments'][0]['type'] = $order['payment']['description'];
         
         $response = $modRetailCrm->request->ordersCreate($orderData, $site);       
         break;
