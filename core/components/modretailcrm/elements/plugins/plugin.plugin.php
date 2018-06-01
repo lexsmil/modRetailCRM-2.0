@@ -111,10 +111,7 @@ switch ($modx->event->name) {
         
         $orderData['delivery']['address']['text'] = $address;
         $orderData['customerComment'] = $order['address']['comment'];
-        //$orderData['delivery']['code'] = $order['delivery']['description'];
-        //$orderData['delivery']['cost'] = $order['delivery']['price'];
-        
-        //$orderData['payments'][0]['type'] = $order['payment']['description'];
+        $orderData['delivery']['cost'] = $order['delivery']['price'];
         
         $response = $modRetailCrm->request->ordersCreate($orderData, $site);       
         break;
