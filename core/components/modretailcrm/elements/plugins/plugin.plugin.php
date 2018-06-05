@@ -115,4 +115,66 @@ switch ($modx->event->name) {
         
         $response = $modRetailCrm->request->ordersCreate($orderData, $site);       
         break;
+    case 'OnMODXInit':
+        $modx->loadClass('msDelivery');
+        $modx->map['msDelivery']['fields']['retailcrm_delivery_code'] = '';
+        $modx->map['msDelivery']['fieldMeta']['retailcrm_delivery_code'] = array(
+            'dbtype' => 'varchar',
+            'precision' => '255',
+            'phptype' => 'string',
+            'null' => true,
+        );
+
+        $modx->loadClass('msPayment');
+        $modx->map['msPayment']['fields']['retailcrm_payment_code'] = '';
+        $modx->map['msPayment']['fieldMeta']['retailcrm_payment_code'] = array(
+            'dbtype' => 'varchar',
+            'precision' => '255',
+            'phptype' => 'string',
+            'null' => true,
+        );
+
+
+        $modretailcrmCache = $modx->cacheManager->get('modRetailCRMData', array(xPDO::OPT_CACHE_KEY=>'modretailcrm'));
+
+        if (!$modretailcrmCache || !$modretailcrmCache['ext_delivery']) {
+            $modRetailCRMData = array();
+
+            $sql = "SELECT * FROM {$modx->getTableName('msDelivery')} LIMIT 1";
+            $q = $modx->prepare($sql);
+            $q->execute();
+            $arr = $q->fetchAll(PDO::FETCH_ASSOC);
+            if(!array_key_exists('retailcrm_delivery_code', $arr[0])){
+                $manager = $modx->getManager();
+                $manager->addField('msDelivery', 'retailcrm_delivery_code');
+            }
+
+            $modRetailCRMData = array('ext_delivery'=> 1);
+            $options = array(
+                xPDO::OPT_CACHE_KEY => 'modretailcrm',
+            );
+            $modx->cacheManager->set('modRetailCRMData', $modRetailCRMData, 0, $options);
+
+        }
+
+        if (!$modretailcrmCache || !$modretailcrmCache['ext_payment']) {
+            $modRetailCRMData = array();
+
+            $sql = "SELECT * FROM {$modx->getTableName('msPayment')} LIMIT 1";
+            $q = $modx->prepare($sql);
+            $q->execute();
+            $arr = $q->fetchAll(PDO::FETCH_ASSOC);
+            if(!array_key_exists('retailcrm_payment_code', $arr[0])){
+                $manager = $modx->getManager();
+                $manager->addField('msPayment', 'retailcrm_payment_code');
+            }
+
+            $modRetailCRMData = array('ext_payment'=> 1);
+            $options = array(
+                xPDO::OPT_CACHE_KEY => 'modretailcrm',
+            );
+            $modx->cacheManager->set('modRetailCRMData', $modRetailCRMData, 0, $options);
+
+        }
+        break;
 }

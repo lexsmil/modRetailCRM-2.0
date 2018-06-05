@@ -5,9 +5,12 @@ $plugins = array();
 $tmp = array(    
     'modRetailCRM'       => array(
         'file'        => 'plugin',
-        'description' => 'Плагин для создания нового пользователя и нового заказа в RetailCRM',
+        'description' => 'Плагин  RetailCRM',
         'events'      => array(
             'OnUserSave' => array(
+                'priority' => 100
+            ),
+            'OnMODXInit' => array(
                 'priority' => 100
             ),
 			'msOnCreateOrder' => array(
