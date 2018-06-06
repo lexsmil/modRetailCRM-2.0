@@ -177,4 +177,37 @@ switch ($modx->event->name) {
 
         }
         break;
+    case 'msOnManagerCustomCssJs':
+        if ($page != 'settings') return;
+        $modx->controller->addHtml("
+            <script type='text/javascript'>
+                
+                //Добавляю к выборке полей retailcrm_delivery_code
+                Ext.override(miniShop2.grid.Delivery, {
+                    getParentFields: miniShop2.grid.Delivery.prototype.getFields(),
+                    getFields: function () {
+                        var parentFields = this.getParentFields;
+                        parentFields.push('retailcrm_delivery_code');
+                        return parentFields;
+                    },
+                  
+                });
+                
+                //Добавляю к окне доставки поле retailcrm_delivery_code
+                Ext.ComponentMgr.onAvailable('minishop2-window-delivery-update', function(config){
+                    this.fields[0]['items'][0]['items'].push(
+                        {
+                            xtype: 'textfield',
+                            name: 'retailcrm_delivery_code',
+                            fieldLabel:'Символьный код доставки в RetailCRM',
+                            anchor: '99%',
+                            //style: 'border:1px solid #efefef;width:95%;padding:5px;',
+                            //html: this.record.retailcrm_delivery_code,
+                            id: 'minishop2-window-delivery-update-retailcrm_delivery_code'
+                            
+                        }
+                    );
+                });
+            </script>");
+        break;
 }

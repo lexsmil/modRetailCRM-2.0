@@ -16,6 +16,9 @@ $tmp = array(
 			'msOnCreateOrder' => array(
                 'priority' => 150
             ),
+            'msOnManagerCustomCssJs' => array(
+                'priority' => 150
+            )
         ),
         'disabled'    => 0
     )
