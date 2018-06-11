@@ -112,9 +112,18 @@ switch ($modx->event->name) {
         $orderData['delivery']['address']['text'] = $address;
         $orderData['customerComment'] = $order['address']['comment'];
         $orderData['delivery']['cost'] = $order['delivery']['price'];
+        if(!empty($order['delivery']['retailcrm_delivery_code'])){
+            $orderData['delivery']['code'] = $order['delivery']['retailcrm_delivery_code'];
+        }
+
+        if(!empty($order['payment']['retailcrm_payment_code'])){
+            $orderData['payments'][0]['type'] = $order['payment']['retailcrm_payment_code'];
+        }
+
         
         $response = $modRetailCrm->request->ordersCreate($orderData, $site);       
         break;
+
     case 'OnMODXInit':
         $modx->loadClass('msDelivery');
         $modx->map['msDelivery']['fields']['retailcrm_delivery_code'] = '';
