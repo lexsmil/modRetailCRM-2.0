@@ -71,6 +71,9 @@ switch ($modx->event->name) {
 
 
         foreach ($order['products'] as $key=>$product) {
+            // Возможность  получить  модификацию msOptionsPrice
+            //$modification = $modx->getObject('msopModification', $product['options']['modification']);
+
             $orderData['items'][$key]['initialPrice'] = $product['price'];
             $orderData['items'][$key]['purchasePrice'] = $product['price'];
             $orderData['items'][$key]['productName'] = $product['name'];
