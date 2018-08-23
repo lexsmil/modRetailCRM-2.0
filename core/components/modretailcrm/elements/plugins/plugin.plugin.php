@@ -63,7 +63,7 @@ switch ($modx->event->name) {
         $orderData['email'] = $order['profile']['email'];
 
         $tmpName = explode(' ', $orderData['firstName']);
-        if(count($tmpName == 3)){
+        if(count($tmpName) == 3){
             $orderData['lastName'] = $tmpName[0];
             $orderData['firstName'] = $tmpName[1];
             $orderData['patronymic'] = $tmpName[2];
