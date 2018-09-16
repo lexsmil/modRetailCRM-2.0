@@ -79,7 +79,7 @@ trait Stores
         return $this->client->makeRequest(
             '/store/prices/upload',
             "POST",
-            $this->fillSite($site, ['prices' => json_encode($prices)])
+              $this->fillSite($site, ['prices' => json_encode($prices)])
         );
     }
 

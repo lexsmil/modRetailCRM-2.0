@@ -11,11 +11,6 @@ class modRetailCrm extends \RetailCrm\ApiClient
 
 	protected $siteCode;
 
-	/*$client = new \RetailCrm\ApiClient(
-	    'https://minishop.retailcrm.ru',
-	    'lxMy7hMo9sCWn1VEu6Yia4bQhfWMS9Ey',
-	    \RetailCrm\ApiClient::V5
-	);	*/
 
 	public function __construct(modX &$modx, $apiKey = '', $crmurl = '', $siteCode = '')
 	{		

@@ -10,7 +10,13 @@ $site = $modx->getOption('modretailcrm_siteCode');
 $apiKey = $modx->getOption('modretailcrm_apiKey');
 $crmUrl = $modx->getOption('modretailcrm_url');
 
-$modRetailCrm = new modRetailCrm($modx, $apiKey, $crmUrl, $site);
+if(!empty($site)  && !empty($apiKey) && !empty($crmUrl)){
+    $modRetailCrm = new modRetailCrm($modx, $apiKey, $crmUrl, $site);
+}else{
+    return;
+}
+
+
 
 switch ($modx->event->name) {
     case 'OnUserSave':
@@ -205,7 +211,7 @@ switch ($modx->event->name) {
                   
                 });
                 
-                //Добавляю к окне доставки поле retailcrm_delivery_code
+                //Добавляю к окну доставки поле retailcrm_delivery_code
                 Ext.ComponentMgr.onAvailable('minishop2-window-delivery-update', function(config){
                     this.fields[0]['items'][0]['items'].push(
                         {
@@ -231,7 +237,7 @@ switch ($modx->event->name) {
                   
                 });
                 
-                //Добавляю к окне доставки поле retailcrm_delivery_code
+                //Добавляю к окну доставки поле retailcrm_delivery_code
                 Ext.ComponentMgr.onAvailable('minishop2-window-payment-update', function(config){
                     this.fields[0]['items'][0]['items'].push(
                         {
